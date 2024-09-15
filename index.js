@@ -4,6 +4,9 @@ import dbmail from "./lib/database.js"
 import connetdb from './lib/database.js';
 const app=express()
 const PORT = 3000;
+//data undestanding middle ware 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 app.use('/email',emailRoute);
 connetdb();
 
