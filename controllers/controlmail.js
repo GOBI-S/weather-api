@@ -1,6 +1,8 @@
 import axios, { Axios } from "axios";
+import nodemailer from 'nodemailer';
 import Mail from "../models/mailmodel.js";
 import sendWeatherEmail from "../weatherf/weatherfetch.js";
+import sendWeatherEmailredo from "../weatherf/weatherfetchusingdbauto.js";
 let location = "";
 export const setLocation = (req) => {
     return req.body.address; // Set the location from request body
@@ -26,7 +28,7 @@ export const enterthemail = async (req, res) => {
 export const getlistmail = async (req, res) => {
   try {
     const Emails = await Mail.find();
-    res.json(Emails);
+    res.json(Emails)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -40,3 +42,27 @@ export const deletemail = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const runIntervalfotrweatherEmail =()=>{
+  setInterval(async()=>{
+    try {
+      const Emails= await Mail.find();
+      const counts = await Mail.countDocuments();
+  
+      for (let i = 0; i < counts; i++) {
+        const email=Emails[i];
+        if (email) {
+          const recipientEmail=email.Email
+          const location=email.address
+          await sendWeatherEmailredo({
+            Email: recipientEmail,
+            Location: location
+          });
+      }}
+      console.log('All emails processed successfully');
+      
+    } catch (error) {
+      console.error('Error processing emails:', error.message);
+    }
+  },24 * 60 * 60 * 1000);
+};
+ runIntervalfotrweatherEmail();

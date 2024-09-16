@@ -1,5 +1,5 @@
 import express from 'express';
-import { deletemail, enterthemail, getlistmail } from '../controllers/controlmail.js';
+import {deletemail, enterthemail, getlistmail } from '../controllers/controlmail.js';
 const router =express.Router();  
 
 // Define a basic route
